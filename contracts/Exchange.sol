@@ -9,10 +9,12 @@ import "./Registry.sol";
 contract Exchange is ERC20 {
     address public tokenAddress;
     address public registryAddress;
+    uint16 public fee;
 
     constructor(address _token) ERC20("EXCOIN", "EXC") {
         require(_token != address(0), "token invalido");
         //para agregar, validar si es un ERC20
+        fee = 9950;
         tokenAddress = _token;
         registryAddress = msg.sender;
     }
@@ -62,13 +64,11 @@ contract Exchange is ERC20 {
         uint256 inputAmount,
         uint256 inputReserve,
         uint256 outputReserve
-    ) private pure returns (uint256) {
+    ) private view returns (uint256) {
         require(inputReserve > 0 && outputReserve > 0, "reservas invalidas");
-        //intentar que el fee sea modificable
-        uint256 fee = 995;
         uint256 inputAmountWithFee = inputAmount * fee;
         uint256 numerator = inputAmountWithFee * outputReserve;
-        uint256 denominator = (inputReserve * 1000) + inputAmountWithFee;
+        uint256 denominator = (inputReserve * 10000) + inputAmountWithFee;
         return numerator / denominator;
     }
 
@@ -156,5 +156,10 @@ contract Exchange is ERC20 {
             _minTokensBought,
             msg.sender
         );
+    }
+
+    function changeFee(uint16 _newFee) public {
+        require(_newFee != 0, "new fee must be not 0");
+        fee = _newFee;
     }
 }

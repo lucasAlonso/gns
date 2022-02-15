@@ -44,4 +44,13 @@ describe("Exchange", function () {
     expect(ethers.utils.formatEther(ethOut)).to.equal("0.994010959095699778");
     //crear una automatizacion que tire muchos valores correctos de la BC
   });
+  it("cambia correctamente el fee", async () => {
+    await token.approve(exchange.address, amountA);
+    await exchange.addLiquidity(amountA, { value: amountB });
+
+    await exchange.changeFee(9999);
+    let fee = await exchange.fee();
+    expect(fee).to.equal(9999);
+    //crear una automatizacion que tire muchos valores correctos de la BC
+  });
 });
